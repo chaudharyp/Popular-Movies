@@ -1,12 +1,28 @@
 package app.com.example.android.popularmovies;
 
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,6 +30,7 @@ import java.util.Arrays;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+    MovieAdapter moviesAdapter;
 
     public MainActivityFragment() {
     }
@@ -22,16 +39,106 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        Movie[] movies = new Movie[]{
-                new Movie(R.mipmap.ic_launcher),
-                new Movie(R.mipmap.ic_launcher),
-                new Movie(R.mipmap.ic_launcher)
-        };
-        ArrayList<Movie> moviesList = new ArrayList<>(Arrays.asList(movies));
-        MovieAdapter moviesAdapter = new MovieAdapter(getContext(), moviesList);
+
+        moviesAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(moviesAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        new FetchMovies().execute();
+    }
+
+    private class FetchMovies extends AsyncTask<Void, Void, ArrayList<Movie>> {
+
+        @Override
+        protected ArrayList<Movie> doInBackground(Void... params) {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            try {
+                final String baseUri = "http://api.themoviedb.org/3/discover/movie";
+
+                final String sortByParam = "sort_by";
+                final String apiKeyParam = "api_key";
+
+                final String sortByVal = "popularity.desc";
+                final String apiKeyVal = BuildConfig.THE_MOVIE_DB_API_KEY;
+                Uri fetchMoviesUri = Uri.parse(baseUri)
+                                        .buildUpon()
+                                        .appendQueryParameter(sortByParam, sortByVal)
+                                        .appendQueryParameter(apiKeyParam, apiKeyVal)
+                                        .build();
+
+                URL url = new URL(fetchMoviesUri.toString());
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                if (inputStream == null) {
+                    return null;
+                }
+
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                StringBuffer stringBuffer = new StringBuffer();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuffer.append(line + "\n");
+                }
+
+                if (stringBuffer.length() == 0) {
+                    return null;
+                }
+
+                String moviesJsonStr = stringBuffer.toString();
+                ArrayList<Movie> moviesList = getMoviesListFromJsonStr(moviesJsonStr);
+                return moviesList;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Movie> movies) {
+            if (movies.isEmpty()) return;
+            moviesAdapter.clear();
+            moviesAdapter.addAll(movies);
+        }
+
+        private ArrayList<Movie> getMoviesListFromJsonStr(String moviesJsonStr) throws JSONException {
+            JSONObject moviesJson = new JSONObject(moviesJsonStr);
+            JSONArray moviesArray = moviesJson.getJSONArray("results");
+            ArrayList<Movie> moviesList = new ArrayList<>();
+    
+            for (int i = 0; i < moviesArray.length(); i++) {
+                JSONObject movieJsonObj = moviesArray.getJSONObject(i);
+                Movie movie = new Movie(movieJsonObj.getInt("id"), movieJsonObj.getString("poster_path"));
+                moviesList.add(movie);
+            }
+            return moviesList;
+        }
     }
 }
