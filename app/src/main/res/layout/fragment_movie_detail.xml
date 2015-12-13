@@ -1,0 +1,66 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        style="@style/WrapContentAll"
+        android:id="@+id/poster"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        style="@style/MovieDetailHeadingTextView"
+        android:text="@string/movie_title"
+        android:id="@+id/title_textView"
+        android:layout_below="@+id/poster"/>
+
+    <TextView
+        style="@style/MovieDetailHeadingTextView"
+        android:text="@string/movie_rating"
+        android:id="@+id/rating_textView"
+        android:layout_below="@+id/title_textView"/>
+
+    <TextView
+        style="@style/MovieDetailHeadingTextView"
+        android:text="@string/movie_release_date"
+        android:id="@+id/release_date_textView"
+        android:layout_below="@+id/rating_textView"/>
+
+    <TextView
+        style="@style/MovieDetailHeadingTextView"
+        android:text="@string/movie_overview"
+        android:id="@+id/overview_textView"
+        android:layout_below="@+id/release_date_textView"/>
+
+    <TextView
+        style="@style/MovieDetailValueTextView"
+        android:id="@+id/title_val"
+        android:layout_below="@+id/poster"
+        android:singleLine="false"
+        android:layout_toRightOf="@+id/release_date_textView"
+        android:layout_toEndOf="@+id/release_date_textView"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        style="@style/MovieDetailValueTextView"
+        android:id="@+id/rating_val"
+        android:layout_alignBottom="@+id/rating_textView"
+        android:layout_alignLeft="@+id/title_val"
+        android:layout_alignStart="@+id/title_val"/>
+
+    <TextView
+        style="@style/MovieDetailValueTextView"
+        android:id="@+id/release_date_val"
+        android:layout_alignBottom="@+id/release_date_textView"
+        android:layout_alignLeft="@+id/rating_val"
+        android:layout_alignStart="@+id/rating_val"/>
+
+    <TextView
+        style="@style/MovieDetailValueTextView"
+        android:id="@+id/overview_val"
+        android:layout_below="@+id/overview_textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+</RelativeLayout>

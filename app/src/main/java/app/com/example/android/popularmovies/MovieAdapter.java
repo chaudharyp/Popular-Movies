@@ -33,7 +33,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         }
 
         ImageView movieImageView = (ImageView) convertView.findViewById(R.id.movie_img);
-        String imgUrl = "http://image.tmdb.org/t/p/w780/" + movie.posterPath;
+        String imgUrl = "http://image.tmdb.org/t/p/w780/" + movie.getPosterPath();
         Picasso.with(getContext())
                .load(imgUrl)
                .into(movieImageView);

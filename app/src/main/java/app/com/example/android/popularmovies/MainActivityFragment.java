@@ -1,16 +1,15 @@
 package app.com.example.android.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,13 +23,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    MovieAdapter moviesAdapter;
+    private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    private MovieAdapter moviesAdapter;
 
     public MainActivityFragment() {
     }
@@ -43,6 +42,16 @@ public class MainActivityFragment extends Fragment {
         moviesAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(moviesAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Movie movie = moviesAdapter.getItem(position);
+
+                Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+                intent.putExtra(Intent.EXTRA_TEXT, movie.getMovieId());
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }
@@ -135,7 +144,8 @@ public class MainActivityFragment extends Fragment {
     
             for (int i = 0; i < moviesArray.length(); i++) {
                 JSONObject movieJsonObj = moviesArray.getJSONObject(i);
-                Movie movie = new Movie(movieJsonObj.getInt("id"), movieJsonObj.getString("poster_path"));
+                Movie movie = new Movie(movieJsonObj.getInt("id"));
+                movie.setPosterPath(movieJsonObj.getString("poster_path"));
                 moviesList.add(movie);
             }
             return moviesList;
