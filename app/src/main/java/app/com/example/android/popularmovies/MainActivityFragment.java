@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +69,9 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected ArrayList<Movie> doInBackground(Void... params) {
+            if (!ConnectivityUtilities.isOnline(getContext())) {
+                return null;
+            }
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
@@ -136,7 +140,16 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
-            if (movies.isEmpty()) return;
+            if (movies == null) {
+                Toast.makeText(getContext(), "Please switch on your internet to access content.", Toast.LENGTH_SHORT)
+                     .show();
+                return;
+            }
+            if (movies.isEmpty()) {
+                Toast.makeText(getContext(), "No movies found. Please try again after sometime.", Toast.LENGTH_SHORT)
+                     .show();
+                return;
+            }
             moviesAdapter.clear();
             moviesAdapter.addAll(movies);
         }
