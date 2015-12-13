@@ -24,7 +24,6 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(LOG_TAG, "inside getView for position: " + position);
         Movie movie = getItem(position);
 
         if (convertView == null) {

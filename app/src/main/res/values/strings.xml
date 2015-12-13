@@ -6,4 +6,20 @@
     <string name="movie_rating">Rating</string>
     <string name="movie_release_date">Release Date</string>
     <string name="movie_overview">Synopsis</string>
+    <string name="sortBy_popularity_entry">Popularity - High to Low</string>
+    <string name="sortBy_rating_entry">Rating - High to Low</string>
+    <string name="sortBy_popularity_entryVal">popularity</string>
+    <string name="sortBy_rating_entryVal">vote_average</string>
+    <string name="pref_sortBy_title">Sort By</string>
+    <string-array name="pref_sortBy_entries">
+        <item>@string/sortBy_popularity_entry</item>
+        <item>@string/sortBy_rating_entry</item>
+    </string-array>
+    <string-array name="pref_sortBy_entryValues">
+        <item>@string/sortBy_popularity_entryVal</item>
+        <item>@string/sortBy_rating_entryVal</item>
+    </string-array>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="pref_sortBy_key">pref_sortBy</string>
+    <string name="pref_sortBy_defaultVal">@string/sortBy_popularity_entryVal</string>
 </resources>

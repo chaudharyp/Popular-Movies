@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +77,9 @@ public class MainActivityFragment extends Fragment {
                 final String sortByParam = "sort_by";
                 final String apiKeyParam = "api_key";
 
-                final String sortByVal = "popularity.desc";
+                String sortBySetting = PreferenceManager.getDefaultSharedPreferences(getContext())
+                                                        .getString(getString(R.string.pref_sortBy_key), getString(R.string.pref_sortBy_defaultVal));
+                final String sortByVal = sortBySetting + ".desc";
                 final String apiKeyVal = BuildConfig.THE_MOVIE_DB_API_KEY;
                 Uri fetchMoviesUri = Uri.parse(baseUri)
                                         .buildUpon()
