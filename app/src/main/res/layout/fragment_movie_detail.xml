@@ -9,6 +9,7 @@
 
         <ImageView
             style="@style/WrapContentAll"
+            android:layout_width="match_parent"
             android:id="@+id/poster"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
